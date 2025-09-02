@@ -26,7 +26,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # ⚠️ IMPORTANTE: Aponta para a pasta frontend
           path: './frontend'
       
       - name: Deploy to GitHub Pages
