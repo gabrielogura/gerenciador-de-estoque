@@ -2,6 +2,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     createParticles();
     
+    const API_URL = "https://gerenciador-de-estoque-tvq6.onrender.com/api";
+    
     // Adicionar evento de submit ao formulário
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -28,22 +30,29 @@ document.addEventListener('DOMContentLoaded', function() {
         btnLogin.disabled = true;
         
         try {
-            // Simular um delay de rede
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // VERDADEIRA chamada à API
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ usuario, senha })
+            });
             
-            // Verificar credenciais (simulando uma chamada à API)
-            if ((usuario === 'Eder' || usuario === 'Thyago') && senha === 'zabhyde3') {
+            const data = await response.json();
+            
+            if (response.ok) {
                 // Animação de sucesso
                 btnLogin.innerHTML = '<i class="fas fa-check"></i> Login realizado!';
                 btnLogin.style.background = 'linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%)';
                 
                 // Salvar usuário e redirecionar
                 setTimeout(() => {
-                    localStorage.setItem('usuario', usuario);
+                    localStorage.setItem('usuario', data.usuario || usuario);
                     window.location.href = 'index.html';
                 }, 1000);
             } else {
-                throw new Error('Credenciais inválidas');
+                throw new Error(data.error || 'Credenciais inválidas');
             }
         } catch (error) {
             // Restaurar botão

@@ -8,6 +8,9 @@ function verificarAutenticacao() {
     return true;
 }
 
+// URL da API - PRODUÇÃO
+const API_URL = "https://gerenciador-de-estoque-tvq6.onrender.com/api";
+
 // Variáveis globais
 let usuario = null;
 let estoque = [];
@@ -77,7 +80,7 @@ function showToast(message, isSuccess = true) {
 // Carregar estoque
 async function carregarEstoque() {
     try {
-        const response = await fetch('http://localhost:3000/api/estoque');
+        const response = await fetch(`${API_URL}/estoque`);
         if (!response.ok) throw new Error('Erro ao carregar estoque');
         
         estoque = await response.json();
@@ -100,7 +103,7 @@ function renderizarEstoque() {
         const tr = document.createElement('tr');
         tr.classList.add('fade-in');
         
-        // Calcular totais (CORRIGIDO: incluir peso_1kg_grande no total)
+        // Calcular totais
         const totalSabor = item.peso_500g + item.peso_1kg + (item.peso_1kg_grande || 0);
         total500g += item.peso_500g;
         total1kg += item.peso_1kg;
@@ -129,17 +132,17 @@ function renderizarEstoque() {
         tbody.appendChild(tr);
     });
     
-    // Atualizar totais (CORRIGIDO: incluir total1kgGrande no cálculo)
+    // Atualizar totais
     document.getElementById('total500g').textContent = total500g;
     document.getElementById('total1kg').textContent = total1kg;
     document.getElementById('total1kgGrande').textContent = total1kgGrande;
     document.getElementById('totalGeral').textContent = total500g + total1kg + total1kgGrande;
     
-    // Adicionar event listeners aos botões (CORRIGIDO: sem duplicação)
+    // Adicionar event listeners aos botões
     adicionarEventListeners();
 }
 
-// Adicionar event listeners aos botões (FUNÇÃO SEPARADA)
+// Adicionar event listeners aos botões
 function adicionarEventListeners() {
     document.querySelectorAll('.btn-adicionar').forEach(btn => {
         // Remover event listeners anteriores para evitar duplicação
@@ -171,10 +174,10 @@ function adicionarEventListeners() {
     });
 }
 
-// Atualizar estoque (AGORA SEM RECARREGAR A PÁGINA INTEIRA)
+// Atualizar estoque (sem recarregar a página inteira)
 async function atualizarEstoque(sabor, peso, alteracao) {
     try {
-        const response = await fetch('http://localhost:3000/api/estoque', {
+        const response = await fetch(`${API_URL}/estoque`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -190,7 +193,7 @@ async function atualizarEstoque(sabor, peso, alteracao) {
         if (!response.ok) throw new Error('Erro ao atualizar estoque');
         
         // Buscar dados atualizados do servidor
-        const responseEstoque = await fetch('http://localhost:3000/api/estoque');
+        const responseEstoque = await fetch(`${API_URL}/estoque`);
         if (responseEstoque.ok) {
             estoque = await responseEstoque.json();
             
@@ -256,7 +259,7 @@ function atualizarInterface() {
 // Mostrar histórico
 async function mostrarHistorico() {
     try {
-        const response = await fetch('http://localhost:3000/api/historico');
+        const response = await fetch(`${API_URL}/historico`);
         if (!response.ok) throw new Error('Erro ao carregar histórico');
         
         const historico = await response.json();
