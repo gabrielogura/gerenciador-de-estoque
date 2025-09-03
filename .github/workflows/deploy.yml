@@ -19,16 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy frontend files
-        run: |
-          mkdir -p ./_site
-          cp -r frontend/* ./_site/
-          cp frontend/.nojekyll ./_site/ 2>/dev/null || true
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: '_site'
+          path: './frontend'
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
